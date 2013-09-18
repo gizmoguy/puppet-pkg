@@ -1,0 +1,10 @@
+# Puppet Package Module
+
+A simple puppet module designed for managing the packages installed on a system
+
+Currently supports:
+
+  * Installing packages
+  * Uninstalling packages
+  * Purging packages
+  * Updating packages
