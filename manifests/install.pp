@@ -14,8 +14,11 @@
 #   Nothing
 #
 class pkg::install (
-  $packages = []
+  $packages = $pkg::params::packages
 ) inherits pkg::params {
+
+  validate_array($packages)
+
   package {
     $packages:
       ensure => 'installed'

@@ -14,8 +14,11 @@
 #   Nothing
 #
 class pkg::upgrade (
-  $packages = []
+  $packages = $pkg::params::packages
 ) inherits pkg::params {
+
+  validate_array($packages)
+
   package {
     $packages:
       ensure => 'latest'
