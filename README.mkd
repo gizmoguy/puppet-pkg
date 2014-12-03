@@ -8,3 +8,4 @@ Currently supports:
   * Uninstalling packages
   * Purging packages
   * Updating packages
+  * Pinning packages

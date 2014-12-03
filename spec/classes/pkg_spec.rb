@@ -127,3 +127,74 @@ describe 'pkg::upgrade', :type => :class do
     end
   end
 end
+
+describe 'pkg::pin', :type => :class do
+  context "pin package" do
+    let(:facts) {{
+        :lsbdistid => 'debian',
+        :lsbdistcodename => 'wheezy'
+    }}
+
+    let( :params ) {{
+      :packages => {
+        'vim' => {
+          'priority' => 50,
+          'packages' => 'vim',
+          'version'  => '7.3*'
+        }
+      },
+    }}
+
+    it { should contain_apt__pin('vim').with(
+      'priority' => 50,
+      'packages' => 'vim',
+      'version'  => '7.3*'
+    )}
+
+    it { should contain_file('vim.pref') \
+         .with_path('/etc/apt/preferences.d/vim.pref') \
+         .with_content(/Package: vim/) \
+         .with_content(/Pin: version 7.3*/) \
+         .with_content(/Pin-Priority: 50/)
+    }
+  end
+
+  context "pin packages" do
+    let(:facts) {{
+        :lsbdistid => 'debian',
+        :lsbdistcodename => 'wheezy'
+    }}
+
+    let( :params ) {{
+      :packages => {
+        'vim' => {
+          'priority' => 50,
+          'packages' => 'vim',
+          'version'  => '7.3*'
+        },
+        'puppet' => {
+          'priority' => 501,
+          'packages' => 'puppet puppet-common',
+          'version'  => '2.7*'
+        }
+      },
+    }}
+
+    it { should contain_apt__pin('vim') }
+    it { should contain_apt__pin('puppet') }
+
+    it { should contain_file('vim.pref') \
+         .with_path('/etc/apt/preferences.d/vim.pref') \
+         .with_content(/Package: vim/) \
+         .with_content(/Pin: version 7.3*/) \
+         .with_content(/Pin-Priority: 50/)
+    }
+
+    it { should contain_file('puppet.pref') \
+         .with_path('/etc/apt/preferences.d/puppet.pref') \
+         .with_content(/Package: puppet puppet-common/) \
+         .with_content(/Pin: version 2.7*/) \
+         .with_content(/Pin-Priority: 501/)
+    }
+  end
+end
