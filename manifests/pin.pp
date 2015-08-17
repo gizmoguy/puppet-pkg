@@ -17,6 +17,10 @@ class pkg::pin (
   $packages = {}
 ) inherits pkg::params {
 
+  if $::osfamily != 'Debian' {
+      fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
+  }
+
   validate_hash($packages)
 
   create_resources('apt::pin', $packages)
