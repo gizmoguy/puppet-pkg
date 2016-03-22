@@ -242,3 +242,51 @@ describe 'pkg::pin', :type => :class do
     end
   end
 end
+
+describe 'pkg::repo', :type => :class do
+  context 'on unsupported distributions' do
+    let(:facts) {{ :osfamily => 'Unsupported' }}
+
+    it 'it fails' do
+      expect { subject.call }.to raise_error(/is not supported on an Unsupported based system/)
+    end
+  end
+
+  ['Debian'].each do |distro|
+    context "on #{distro}" do
+      let(:facts) {{
+        :osfamily => distro,
+        :lsbdistid => distro,
+        :lsbdistcodename => 'wheezy'
+      }}
+
+      context "add repo" do
+        let( :params ) {{
+          :repos => {
+            'wand' => {
+              'location'   => 'http://packages.wand.net.nz',
+              'repos'      => 'main',
+              'key'        => '69A507877C4B94E8',
+              'key_source' => 'http://packages.wand.net.nz/pubkey.gpg'
+            }
+          },
+        }}
+
+        it { should contain_apt__source('wand').with(
+          'location' => 'http://packages.wand.net.nz',
+          'repos'    => 'main',
+        )}
+
+        it { should contain_apt__key('Add key: 69A507877C4B94E8 from Apt::Source wand').with(
+          'key'        => '69A507877C4B94E8',
+          'key_source' => 'http://packages.wand.net.nz/pubkey.gpg',
+        )}
+
+        it { should contain_file('wand.list') \
+             .with_path('/etc/apt/sources.list.d/wand.list') \
+             .with_content(%r{deb http://packages.wand.net.nz wheezy main})
+        }
+      end
+    end
+  end
+end

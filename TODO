@@ -1,0 +1,7 @@
+ * Integrate all standalone classes inside of pkg.
+   This will let us define sensible ordering of everything, i.e:
+     1. Configure repos
+     2. Pin
+     3. Remove
+     4. Install
+     5. Upgrade
