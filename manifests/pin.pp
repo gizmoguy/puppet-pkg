@@ -4,8 +4,8 @@
 #
 # Parameters:
 #   [*packages*]
-#     List of packages to upgrade.
-#     Default: []
+#     Hash of packages to pin.
+#     Default: {}
 #
 # Actions:
 #   Pins listed packages
